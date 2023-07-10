@@ -13,7 +13,7 @@ export default async (client: Client): Promise<void> => {
 
     // Create server map.
     client.servers = new Map();
-    for (const server of Object.entries(config.servers)) client.servers.set(server[0], new Server(server[1].uuid, server[1].logChannel));
+    for (const server of Object.entries(config.servers)) client.servers.set(server[0], new Server(client, server[0], server[1]));
 
     await refreshActivity(client);
 
