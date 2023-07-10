@@ -7,6 +7,7 @@ import { emojis, emojiIDs } from './emojis';
 import help from './help';
 import httpCodes from './httpCodes';
 import roles from './roles';
+import servers from './servers';
 
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -22,6 +23,7 @@ const config = {
     help,
     httpCodes,
     roles,
+    servers,
 
     version,
     footer: `Created by DamienVesper#0001 | v${version}`

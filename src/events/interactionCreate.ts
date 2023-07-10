@@ -13,7 +13,7 @@ export default async (client: Client, interaction: Interaction): Promise<void> =
         if (cmd == null) return;
 
         // Execute the command.
-        log(`magenta`, `${interaction.user.tag} [${interaction.user.id}] ran command ${interaction.commandName} in ${interaction.guild.name}.`);
+        log(`magenta`, `${interaction.user.discriminator !== `0` ? interaction.user.tag : interaction.user.username} [${interaction.user.id}] ran command ${interaction.commandName} in ${interaction.guild.name}.`);
         cmd.run(client, interaction);
     }
 };
