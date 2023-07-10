@@ -1,0 +1,10 @@
+[Unit]
+Description=Geneshift Discord integration.
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/GeneshiftBot
+ExecStart=/usr/bin/pnpm dev
+
+[Install]
+WantedBy=multi-user.target
