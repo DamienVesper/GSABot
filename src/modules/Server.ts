@@ -27,9 +27,9 @@ const REGEX = {
     RESET_SERVER: /\(\d+\): (HostNewRound|Restarting Match|Queuing Restart Due to New Player)/i,
 
     // BR
+    ROUND_STARTING: /\(\d+\): RestartBattleRound: : (\d+)/,
     ROUND_WON: /\(\d+\): SERVER: (.+) wins round (\d+)/,
-    MATCH_WON: /`\(\d+\): SERVER: (.+) gets the winner winner/,
-    ROUND_STARTING: /\(\d+\): RestartBattleRound: : (\d+)/
+    MATCH_WON: /`\(\d+\): SERVER: (.+) gets the winner winner/
 };
 
 interface Player {
@@ -37,11 +37,21 @@ interface Player {
     deaths: number
 }
 
+enum ServerState {
+    Initialized,
+    Warmup,
+    Round1,
+    Round2,
+    Round3,
+    Finished
+}
+
 class Server {
     client: Client;
     config: ServerConfig;
 
     name: string;
+    state: ServerState;
 
     channel: TextBasedChannel | undefined;
 
@@ -61,6 +71,7 @@ class Server {
         this.config = config;
 
         this.name = name;
+        this.state = ServerState.Initialized;
 
         this.winners = [];
         this.topPlayers = [];
@@ -157,6 +168,8 @@ class Server {
                 const perpetratorIsBot = this.users.has(perpetrator);
                 const victimIsBot = this.users.has(victim);
 
+                if (perpetratorIsBot && victimIsBot) return;
+
                 const A = perpetratorIsBot ? `[B] ${perpetrator}` : perpetrator;
                 const B = victimIsBot ? `[B] ${victim}` : victim;
 
@@ -167,6 +180,72 @@ class Server {
                     .setFooter({ text: this.footer });
 
                 void this.channel.send({ embeds: [sEmbed] });
+            } else if (
+                (REGEX.ROUND_OVER.test(data) && this.state === ServerState.Finished) ||
+                REGEX.RESET_SERVER.test(data)
+            ) this.reset();
+            else if (REGEX.ROUND_STARTING.test(data)) {
+                const res = REGEX.ROUND_STARTING.exec(data);
+                if (res === null) return;
+
+                const round = res[1];
+                switch (round) {
+                    case `1`: this.state = ServerState.Round1; break;
+                    case `2`: this.state = ServerState.Round2; break;
+                    case `3`: this.state = ServerState.Round3; break;
+                }
+
+                const sEmbed = new EmbedBuilder()
+                    .setColor(config.colors.blue)
+                    .setDescription(`:exclamation: Round ${round} is starting!`)
+                    .setTimestamp(new Date())
+                    .setFooter({ text: this.footer });
+
+                void this.channel.send({ embeds: [sEmbed] });
+            } else if (REGEX.ROUND_WON.test(data)) {
+                const res = REGEX.ROUND_WON.exec(data);
+                if (res === null) return;
+
+                const winner = res[1];
+                const round = res[2];
+
+                const isBot = this.users.has(winner);
+                this.winners.push(isBot ? `[B] ${winner}` : winner);
+
+                const sEmbed = new EmbedBuilder()
+                    .setColor(config.colors.purple)
+                    .setDescription(`${isBot ? `:robot:` : `:adult:`} **${winner}**${isBot ? `, a bot,` : ``} won round ${round}!`)
+                    .setTimestamp(new Date())
+                    .setFooter({ text: this.footer });
+
+                void this.channel.send({ embeds: [sEmbed] });
+            } else if (REGEX.MATCH_WON.test(data)) {
+                const res = REGEX.MATCH_WON.exec(data);
+                if (res === null) return;
+
+                const matchWinner = res[1];
+                const isBot = this.users.has(matchWinner);
+
+                const lb = [...this.players.entries()].sort(([a, x], [b, y]) => (x.kills / x.deaths) - (y.kills / y.deaths)).slice(0, 5);
+
+                const sEmbed = new EmbedBuilder()
+                    .setColor(config.colors.teal)
+                    .setDescription(`${isBot ? `:person_facepalming: A bot, **[B] ${matchWinner}**,` : `:trophy: **${matchWinner}**`} won the final round!`)
+                    .setFields([
+                        {
+                            name: `Round Winners`,
+                            value: this.winners.map((x, i) => `Round ${i} - ${x}`).join(`\n`)
+                        },
+                        {
+                            name: `Top KDR`,
+                            value: lb.map(([username, data]) => `**${username}** - ${data.kills}/${data.deaths} (${(data.kills / data.deaths).toFixed(2)})`).join(`\n`)
+                        }
+                    ])
+                    .setTimestamp(new Date())
+                    .setFooter({ text: this.footer });
+
+                void this.channel.send({ embeds: [sEmbed] });
+                this.reset(true);
             }
         });
 
@@ -175,6 +254,13 @@ class Server {
         });
 
         log(`green`, `Initiated logging for ${this.name} [${this.config.uuid}].`);
+    };
+
+    private readonly reset = (force?: boolean): void => {
+        if (force === true) this.users.clear();
+        this.players.clear();
+
+        this.state = ServerState.Warmup;
     };
 
     get logPath (): string {
