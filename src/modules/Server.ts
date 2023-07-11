@@ -54,6 +54,8 @@ class Server {
     logger: Tail;
     version: string | undefined;
 
+    footer: string;
+
     constructor (client: Client, name: string, config: ServerConfig) {
         this.client = client;
         this.config = config;
@@ -84,11 +86,16 @@ class Server {
 
         this.channel = await this.client.channels.fetch(this.config.log.channel) as TextBasedChannel;
 
+        this.footer = this.version !== undefined
+            ? `${this.name} | Gene Shift Auto v${this.version}`
+            : this.name;
+
         if (this.version !== undefined) {
             const sEmbed = new EmbedBuilder()
                 .setColor(config.colors.blue)
-                .setDescription(`Connected to **${this.name}**, running **Gene Shift Auto v${this.version}**.`)
-                .setTimestamp();
+                .setDescription(`Monitoring **${this.name}**, running **Gene Shift Auto v${this.version}**.`)
+                .setTimestamp()
+                .setFooter({ text: this.footer });
 
             await this.channel.send({ embeds: [sEmbed] });
         }
@@ -111,7 +118,7 @@ class Server {
                     .setColor(config.colors.green)
                     .setDescription(`:arrow_right: **${username}** has joined the server.`)
                     .setTimestamp(new Date())
-                    .setFooter({ text: config.footer });
+                    .setFooter({ text: this.footer });
 
                 void this.channel.send({ embeds: [sEmbed] });
             } else if (REGEX.LEAVE.test(data)) {
@@ -120,14 +127,14 @@ class Server {
 
                 const username = res[1];
 
-                if (!this.players.has(username)) return;
-                this.players.delete(username);
+                if (!this.users.has(username)) return;
+                this.users.delete(username);
 
                 const sEmbed = new EmbedBuilder()
                     .setColor(config.colors.red)
                     .setDescription(`:arrow_left: **${username}** has left the server.`)
                     .setTimestamp(new Date())
-                    .setFooter({ text: config.footer });
+                    .setFooter({ text: this.footer });
 
                 void this.channel.send({ embeds: [sEmbed] });
             } else if (this.config.log?.killfeed === true && REGEX.KILL.test(data)) {
@@ -157,7 +164,7 @@ class Server {
                     .setColor(config.colors.orange)
                     .setDescription(`:skull_crossbones: **${A}** killed **${B}** with ${article(weapon)} ${weapon}.`)
                     .setTimestamp(new Date())
-                    .setFooter({ text: config.footer });
+                    .setFooter({ text: this.footer });
 
                 void this.channel.send({ embeds: [sEmbed] });
             }
