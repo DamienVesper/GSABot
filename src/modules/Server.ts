@@ -235,11 +235,15 @@ class Server {
                     .setFields([
                         {
                             name: `Round Winners`,
-                            value: this.winners.map((x, i) => `Round ${i} - ${x}`).join(`\n`)
+                            value: this.winners.length !== 0
+                                ? this.winners.map((x, i) => `Round ${i} - ${x}`).join(`\n`)
+                                : `Error loading winners (bot was restarted).`
                         },
                         {
                             name: `Top KDR`,
-                            value: lb.map(([username, data]) => `**${username}** - ${data.kills}/${data.deaths} (${(data.kills / data.deaths).toFixed(2)})`).join(`\n`)
+                            value: lb.length !== 0
+                                ? lb.map(([username, data]) => `**${username}** - ${data.kills}/${data.deaths} (${(data.kills / data.deaths).toFixed(2)})`).join(`\n`)
+                                : `Error loading leaderboard (bot was restarted).`
                         }
                     ])
                     .setTimestamp(new Date())
