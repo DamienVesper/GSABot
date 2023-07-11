@@ -75,6 +75,18 @@ const time = (ms: number): string => {
     else return `${seconds} seconds`;
 };
 
+/**
+ * Determine the article preceding a word, to a degree. Exceptions unsupported.
+ * https://owl.purdue.edu/owl/general_writing/grammar/articles_a_versus_an.html
+ * @param str The template string.
+ */
+const article = (str: string): string => {
+    const char = str.slice(0, 1);
+    return char === `a` || char === `e` || char === `i` || char === `o` || char === `u`
+        ? `an`
+        : `a`;
+};
+
 const addCommaSeparators = (num: number): string => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, `,`);
 
 const toCapitalString = (string: string): string => string.toString().replace(/^\w/, f => f.toUpperCase()).split(/(?=[A-Z])/).join(` `);
@@ -87,6 +99,7 @@ export {
     bytes,
     date,
     time,
+    article,
     addCommaSeparators,
     toCapitalString,
     toCapitalStringFromArray
