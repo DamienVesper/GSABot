@@ -29,7 +29,7 @@ const REGEX = {
     // BR
     ROUND_STARTING: /\(\d+\): RestartBattleRound: : (\d+)/,
     ROUND_WON: /\(\d+\): SERVER: (.+) wins round (\d+)/,
-    MATCH_WON: /`\(\d+\): SERVER: (.+) gets the winner winner/
+    MATCH_WON: /\(\d+\): SERVER: (.+) gets the winner winner/
 };
 
 interface Player {
