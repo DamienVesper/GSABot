@@ -190,6 +190,7 @@ class Server {
 
                 const round = res[1];
                 switch (round) {
+                    case `0`: this.state = ServerState.Warmup; break;
                     case `1`: this.state = ServerState.Round1; break;
                     case `2`: this.state = ServerState.Round2; break;
                     case `3`: this.state = ServerState.Round3; break;
@@ -197,7 +198,7 @@ class Server {
 
                 const sEmbed = new EmbedBuilder()
                     .setColor(config.colors.blue)
-                    .setDescription(`:exclamation: Round ${round} is starting!`)
+                    .setDescription(`:exclamation: ${round === `0` ? `The warmup round` : `Round ${round}`} is starting!`)
                     .setTimestamp(new Date())
                     .setFooter({ text: this.footer });
 
@@ -260,7 +261,7 @@ class Server {
         if (force === true) this.users.clear();
         this.players.clear();
 
-        this.state = ServerState.Warmup;
+        this.state = ServerState.Initialized;
     };
 
     get logPath (): string {
