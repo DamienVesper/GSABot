@@ -23,8 +23,8 @@ const REGEX = {
     JOIN: /\(\d+\): (.+) joined with steamID: (\d+)/,
     LEAVE: /\(\d+\): Saving: (.+)/,
     KILL: /\(\d+\): (.+) killed (.+) with (.+)/,
-    ROUND_OVER: /(?i)\(\d+\): Sending Round Over/,
-    RESET_SERVER: /(?i)\(\d+\): (HostNewRound|Restarting Match|Queuing Restart Due to New Player)/,
+    ROUND_OVER: /\(\d+\): Sending Round Over/i,
+    RESET_SERVER: /\(\d+\): (HostNewRound|Restarting Match|Queuing Restart Due to New Player)/i,
 
     // BR
     ROUND_WON: /\(\d+\): SERVER: (.+) wins round (\d+)/,
