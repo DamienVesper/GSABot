@@ -73,8 +73,10 @@ class Server {
     }
 
     private readonly parseVersion = (): void => {
-        const data = fs.readFileSync(this.logPath, `utf-8`);
-        console.log(REGEX.START.exec(data));
+        const data = REGEX.START.exec(fs.readFileSync(this.logPath, `utf-8`));
+        if (data === null) return;
+
+        this.version = data[1].slice(1);
     };
 
     private readonly initLogger = async (): Promise<void> => {
