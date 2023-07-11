@@ -87,7 +87,7 @@ class Server {
         if (this.version !== undefined) {
             const sEmbed = new EmbedBuilder()
                 .setColor(config.colors.blue)
-                .setDescription(`Connected to **${this.name}**, running GeneShiftAuto v${this.version}`)
+                .setDescription(`Connected to **${this.name}**, running **Gene Shift Auto v${this.version}**.`)
                 .setTimestamp();
 
             await this.channel.send({ embeds: [sEmbed] });

@@ -12,7 +12,7 @@ const servers: Record<string, Server> = {
         uuid: `d3bef952-a64c-45c4-8ec0-be4b6daf59fe`,
         log: {
             channel: `644370385025892374`,
-            killfeed: false
+            killfeed: true
         }
     },
     [`CO-US02`]: { uuid: `beb15055-e853-4d1d-88a6-8fe027225184` },
