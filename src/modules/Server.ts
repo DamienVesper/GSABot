@@ -64,8 +64,6 @@ class Server {
     logger: Tail;
     version: string | undefined;
 
-    footer: string;
-
     constructor (client: Client, name: string, config: ServerConfig) {
         this.client = client;
         this.config = config;
@@ -97,10 +95,6 @@ class Server {
 
         this.channel = await this.client.channels.fetch(this.config.log.channel) as TextBasedChannel;
 
-        this.footer = this.version !== undefined
-            ? `${this.name} | Gene Shift Auto v${this.version}`
-            : this.name;
-
         if (this.version !== undefined) {
             const sEmbed = new EmbedBuilder()
                 .setColor(config.colors.blue)
@@ -116,8 +110,17 @@ class Server {
         this.logger.on(`line`, (data: string) => {
             if (this.channel === undefined) return;
 
-            if (REGEX.START.test(data)) this.parseVersion();
-            else if (REGEX.JOIN.test(data)) {
+            if (REGEX.START.test(data) && this.version !== undefined) {
+                this.parseVersion();
+
+                const sEmbed = new EmbedBuilder()
+                    .setColor(config.colors.blue)
+                    .setDescription(`**${this.name}** was updated to **Gene Shift Auto v${this.version}**.`)
+                    .setTimestamp()
+                    .setFooter({ text: this.footer });
+
+                void this.channel.send({ embeds: [sEmbed] });
+            } else if (REGEX.JOIN.test(data)) {
                 const res = REGEX.JOIN.exec(data);
                 if (res === null) return;
 
@@ -271,6 +274,12 @@ class Server {
 
     get logPath (): string {
         return `/var/lib/pterodactyl/volumes/${this.config.uuid}/data/log.txt`;
+    }
+
+    get footer (): string {
+        return this.version !== undefined
+            ? `${this.name} | Gene Shift Auto v${this.version}`
+            : this.name;
     }
 }
 
