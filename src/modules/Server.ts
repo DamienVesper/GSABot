@@ -227,6 +227,8 @@ class Server {
                 const res = REGEX.MATCH_WON.exec(data);
                 if (res === null) return;
 
+                this.state = ServerState.Finished;
+
                 const matchWinner = res[1];
                 const isBot = config.bots.includes(matchWinner.toLowerCase());
 
