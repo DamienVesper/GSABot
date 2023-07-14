@@ -116,7 +116,8 @@ class Server {
         this.logger.on(`line`, (data: string) => {
             if (this.channel === undefined) return;
 
-            if (REGEX.JOIN.test(data)) {
+            if (REGEX.START.test(data)) this.parseVersion();
+            else if (REGEX.JOIN.test(data)) {
                 const res = REGEX.JOIN.exec(data);
                 if (res === null) return;
 
