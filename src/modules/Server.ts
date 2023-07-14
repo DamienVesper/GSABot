@@ -232,7 +232,7 @@ class Server {
                 const lb = [...this.players.entries()].sort(([a, x], [b, y]) => (x.kills / x.deaths) - (y.kills / y.deaths)).slice(0, 5);
 
                 if (this.winners.length === 0 && lb.length === 0) return;
-                this.winners.push(isBot ? `[B] ${matchWinner}` : matchWinner);
+                this.winners.push(isBot ? `[B] ${matchWinner.toUpperCase()}` : matchWinner.toUpperCase());
 
                 const sEmbed = new EmbedBuilder()
                     .setColor(config.colors.teal)
