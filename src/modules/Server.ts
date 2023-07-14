@@ -8,9 +8,9 @@ import { Tail } from 'tail';
 import * as fs from 'fs';
 
 import log from '../utils/log';
+import { article } from '../utils/standardize';
 
 import type { Client } from '../typings/discord';
-import { article } from '../utils/standardize';
 
 /**
  * https://github.com/LouisT/GSAFeed/blob/main/parsers.go
@@ -145,7 +145,7 @@ class Server {
                     .setFooter({ text: this.footer });
 
                 void this.channel.send({ embeds: [sEmbed] });
-            } else if (this.config.log?.killfeed === true && REGEX.KILL.test(data)) {
+            } else if (REGEX.KILL.test(data)) {
                 const res = REGEX.KILL.exec(data);
                 if (res === null) return;
 
@@ -162,21 +162,23 @@ class Server {
                 if (victimStats === undefined) this.players.set(victim, { kills: 0, deaths: 1 });
                 else victimStats.deaths++;
 
-                const perpetratorIsBot = config.bots.includes(perpetrator.toLowerCase());
-                const victimIsBot = config.bots.includes(victim.toLowerCase());
+                if (this.config.log?.killfeed === true) {
+                    const perpetratorIsBot = config.bots.includes(perpetrator.toLowerCase());
+                    const victimIsBot = config.bots.includes(victim.toLowerCase());
 
-                if (perpetratorIsBot && victimIsBot) return;
+                    if (perpetratorIsBot && victimIsBot) return;
 
-                const A = perpetratorIsBot ? `[B] ${perpetrator}` : perpetrator;
-                const B = victimIsBot ? `[B] ${victim}` : victim;
+                    const A = perpetratorIsBot ? `[B] ${perpetrator}` : perpetrator;
+                    const B = victimIsBot ? `[B] ${victim}` : victim;
 
-                const sEmbed = new EmbedBuilder()
-                    .setColor(config.colors.orange)
-                    .setDescription(`:skull_crossbones: **${A}** killed **${B}** with ${article(weapon)} ${weapon}.`)
-                    .setTimestamp(new Date())
-                    .setFooter({ text: this.footer });
+                    const sEmbed = new EmbedBuilder()
+                        .setColor(config.colors.orange)
+                        .setDescription(`:skull_crossbones: **${A}** killed **${B}** with ${article(weapon)} ${weapon}.`)
+                        .setTimestamp(new Date())
+                        .setFooter({ text: this.footer });
 
-                void this.channel.send({ embeds: [sEmbed] });
+                    void this.channel.send({ embeds: [sEmbed] });
+                }
             } else if (
                 (REGEX.ROUND_OVER.test(data) && this.state === ServerState.Finished) ||
                 REGEX.RESET_SERVER.test(data)
@@ -218,7 +220,7 @@ class Server {
 
                 void this.channel.send({ embeds: [sEmbed] });
                 this.state = ServerState.Initialized;
-            } else if (REGEX.MATCH_WON.test(data)) {
+            } else if (REGEX.MATCH_WON.test(data) && this.state !== ServerState.Finished) {
                 const res = REGEX.MATCH_WON.exec(data);
                 if (res === null) return;
 
