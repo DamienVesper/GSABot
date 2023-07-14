@@ -270,6 +270,8 @@ class Server {
         if (force === true) {
             this.players.clear();
             this.users.clear();
+
+            this.winners = [];
         }
 
         this.state = ServerState.Initialized;
