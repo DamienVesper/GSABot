@@ -111,15 +111,10 @@ class Server {
             if (this.channel === undefined) return;
 
             if (REGEX.START.test(data) && this.version !== undefined) {
-                this.parseVersion();
+                const res = REGEX.START.exec(data);
+                if (res === null) return;
 
-                const sEmbed = new EmbedBuilder()
-                    .setColor(config.colors.blue)
-                    .setDescription(`**${this.name}** was updated to **Gene Shift Auto v${this.version}**.`)
-                    .setTimestamp()
-                    .setFooter({ text: this.footer });
-
-                void this.channel.send({ embeds: [sEmbed] });
+                this.version = res[1].slice(1);
             } else if (REGEX.JOIN.test(data)) {
                 const res = REGEX.JOIN.exec(data);
                 if (res === null) return;
