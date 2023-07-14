@@ -205,7 +205,7 @@ class Server {
                     .setFooter({ text: this.footer });
 
                 void this.channel.send({ embeds: [sEmbed] });
-            } else if (REGEX.ROUND_WON.test(data)) {
+            } else if (REGEX.ROUND_WON.test(data) && this.state !== ServerState.Initialized) {
                 const res = REGEX.ROUND_WON.exec(data);
                 if (res === null) return;
 
@@ -222,6 +222,7 @@ class Server {
                     .setFooter({ text: this.footer });
 
                 void this.channel.send({ embeds: [sEmbed] });
+                this.state = ServerState.Initialized;
             } else if (REGEX.MATCH_WON.test(data)) {
                 const res = REGEX.MATCH_WON.exec(data);
                 if (res === null) return;
