@@ -163,8 +163,8 @@ class Server {
                 else victimStats.deaths++;
 
                 if (this.config.log?.killfeed === true) {
-                    const perpetratorIsBot = config.bots.includes(perpetrator.toLowerCase());
-                    const victimIsBot = config.bots.includes(victim.toLowerCase());
+                    const perpetratorIsBot = this.isBot(perpetrator);
+                    const victimIsBot = this.isBot(victim);
 
                     if (perpetratorIsBot && victimIsBot) return;
 
@@ -209,7 +209,7 @@ class Server {
                 const winner = res[1];
                 const round = res[2];
 
-                const isBot = config.bots.includes(winner.toLowerCase());
+                const isBot = this.isBot(winner);
                 this.winners.push(isBot ? `[B] ${winner}` : winner);
 
                 const sEmbed = new EmbedBuilder()
@@ -227,9 +227,11 @@ class Server {
                 this.state = ServerState.Finished;
 
                 const matchWinner = res[1];
-                const isBot = config.bots.includes(matchWinner.toLowerCase());
+                const isBot = this.isBot(matchWinner);
 
                 const lb = [...this.players.entries()].sort(([a, x], [b, y]) => (x.kills / x.deaths) - (y.kills / y.deaths)).slice(0, 5);
+
+                if (this.winners.length === 0 && lb.length === 0) return;
 
                 const sEmbed = new EmbedBuilder()
                     .setColor(config.colors.teal)
@@ -238,13 +240,13 @@ class Server {
                         {
                             name: `Round Winners`,
                             value: this.winners.length !== 0
-                                ? this.winners.map((x, i) => `Round ${i} - ${x}`).join(`\n`)
+                                ? this.winners.map((x, i) => `Round ${i + 1} - ${x}`).join(`\n`)
                                 : `Error loading winners (bot was restarted).`
                         },
                         {
                             name: `Top KDR`,
                             value: lb.length !== 0
-                                ? lb.map(([username, data]) => `**${username}** - ${data.kills}/${data.deaths} (${(data.kills / data.deaths).toFixed(2)})`).join(`\n`)
+                                ? lb.map(([username, data]) => `**${this.isBot(username) ? `[B] ${username}` : username}** - ${data.kills}/${data.deaths} (${(data.kills / data.deaths).toFixed(2)})`).join(`\n`)
                                 : `Error loading leaderboard (bot was restarted).`
                         }
                     ])
@@ -273,6 +275,8 @@ class Server {
 
         this.state = ServerState.Initialized;
     };
+
+    readonly isBot = (name: string): boolean => config.bots.includes(name.toLowerCase());
 
     get logPath (): string {
         return `/var/lib/pterodactyl/volumes/${this.config.uuid}/data/log.txt`;
