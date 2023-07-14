@@ -241,7 +241,7 @@ class Server {
                         {
                             name: `Round Winners`,
                             value: this.winners.length !== 0
-                                ? this.winners.map((x, i) => `Round ${i + 1} - ${x}`).join(`\n`)
+                                ? this.winners.map((x, i) => `${i === 0 ? `Warmup` : `Round ${i}`} - ${x}`).join(`\n`)
                                 : `Error loading winners (bot was restarted).`
                         },
                         {
