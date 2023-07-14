@@ -28,7 +28,7 @@ const config = {
     roles,
     servers,
 
-    bots: fs.readFileSync(path.resolve(__dirname, `./bots.txt`), `utf-8`).split(`\n`).filter(x => !x.startsWith(`/*`) && x !== ``),
+    bots: fs.readFileSync(path.resolve(__dirname, `./bots.txt`), `utf-8`).split(`\n`).filter(x => !x.startsWith(`/*`) && x !== ``).map(x => x.toLowerCase()),
 
     version,
     footer: `GeneshiftBot | v${version}`

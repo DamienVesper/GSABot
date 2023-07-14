@@ -167,8 +167,8 @@ class Server {
                 if (victimStats === undefined) this.players.set(victim, { kills: 0, deaths: 1 });
                 else victimStats.deaths++;
 
-                const perpetratorIsBot = config.bots.includes(perpetrator);
-                const victimIsBot = config.bots.includes(victim);
+                const perpetratorIsBot = config.bots.includes(perpetrator.toLowerCase());
+                const victimIsBot = config.bots.includes(victim.toLowerCase());
 
                 if (perpetratorIsBot && victimIsBot) return;
 
@@ -212,7 +212,7 @@ class Server {
                 const winner = res[1];
                 const round = res[2];
 
-                const isBot = config.bots.includes(winner);
+                const isBot = config.bots.includes(winner.toLowerCase());
                 this.winners.push(isBot ? `[B] ${winner}` : winner);
 
                 const sEmbed = new EmbedBuilder()
@@ -227,7 +227,7 @@ class Server {
                 if (res === null) return;
 
                 const matchWinner = res[1];
-                const isBot = config.bots.includes(matchWinner);
+                const isBot = config.bots.includes(matchWinner.toLowerCase());
 
                 const lb = [...this.players.entries()].sort(([a, x], [b, y]) => (x.kills / x.deaths) - (y.kills / y.deaths)).slice(0, 5);
 
