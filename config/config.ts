@@ -9,6 +9,9 @@ import httpCodes from './httpCodes';
 import roles from './roles';
 import { servers } from './servers';
 
+import * as path from 'path';
+import * as fs from 'fs';
+
 import * as dotenv from 'dotenv';
 dotenv.config();
 
@@ -24,6 +27,8 @@ const config = {
     httpCodes,
     roles,
     servers,
+
+    bots: fs.readFileSync(path.resolve(__dirname, `./bots.txt`), `utf-8`).split(`\n`).filter(x => !x.startsWith(`/*`) && x !== ``),
 
     version,
     footer: `GeneshiftBot | v${version}`

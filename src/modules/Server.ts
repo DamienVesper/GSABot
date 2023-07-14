@@ -59,7 +59,7 @@ class Server {
     topPlayers: Array<{ username: string, kdr: number }>;
 
     players: Map<string, Player>;
-    users: Set<string>;
+    users: Map<string, string>;
 
     logger: Tail;
     version: string | undefined;
@@ -77,7 +77,7 @@ class Server {
         this.topPlayers = [];
 
         this.players = new Map();
-        this.users = new Set();
+        this.users = new Map();
 
         if (config !== undefined) {
             this.parseVersion();
@@ -121,9 +121,9 @@ class Server {
                 if (res === null) return;
 
                 const username = res[1];
+                const steamID = res[2];
 
-                if (this.users.has(username)) return;
-                this.users.add(username);
+                this.users.set(username, steamID);
 
                 const sEmbed = new EmbedBuilder()
                     .setColor(config.colors.green)
@@ -137,8 +137,6 @@ class Server {
                 if (res === null) return;
 
                 const username = res[1];
-
-                if (!this.users.has(username)) return;
                 this.users.delete(username);
 
                 const sEmbed = new EmbedBuilder()
@@ -165,8 +163,8 @@ class Server {
                 if (victimStats === undefined) this.players.set(victim, { kills: 0, deaths: 1 });
                 else victimStats.deaths++;
 
-                const perpetratorIsBot = !this.users.has(perpetrator);
-                const victimIsBot = !this.users.has(victim);
+                const perpetratorIsBot = config.bots.includes(perpetrator);
+                const victimIsBot = config.bots.includes(victim);
 
                 if (perpetratorIsBot && victimIsBot) return;
 
@@ -210,7 +208,7 @@ class Server {
                 const winner = res[1];
                 const round = res[2];
 
-                const isBot = !this.users.has(winner);
+                const isBot = config.bots.includes(winner);
                 this.winners.push(isBot ? `[B] ${winner}` : winner);
 
                 const sEmbed = new EmbedBuilder()
@@ -225,7 +223,7 @@ class Server {
                 if (res === null) return;
 
                 const matchWinner = res[1];
-                const isBot = !this.users.has(matchWinner);
+                const isBot = config.bots.includes(matchWinner);
 
                 const lb = [...this.players.entries()].sort(([a, x], [b, y]) => (x.kills / x.deaths) - (y.kills / y.deaths)).slice(0, 5);
 
@@ -262,8 +260,10 @@ class Server {
     };
 
     private readonly reset = (force?: boolean): void => {
-        if (force === true) this.users.clear();
-        this.players.clear();
+        if (force === true) {
+            this.players.clear();
+            this.users.clear();
+        }
 
         this.state = ServerState.Initialized;
     };
