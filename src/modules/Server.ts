@@ -229,7 +229,7 @@ class Server {
                 const matchWinner = res[1];
                 const isBot = this.isBot(matchWinner);
 
-                const lb = [...this.players.entries()].sort(([a, x], [b, y]) => (x.kills / x.deaths) - (y.kills / y.deaths)).slice(0, 5);
+                const lb = [...this.players.entries()].sort(([a, x], [b, y]) => (y.kills / y.deaths) - (x.kills / x.deaths)).slice(0, 5);
 
                 if (this.winners.length === 0 && lb.length === 0) return;
                 this.winners.push(isBot ? `[B] ${matchWinner.toUpperCase()}` : matchWinner.toUpperCase());
