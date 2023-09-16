@@ -16,6 +16,7 @@ const cmd: SlashCommandBuilder = new SlashCommandBuilder()
     .setDescription(`View the help menu.`);
 
 const run = async (client: Client, interaction: ChatInputCommandInteraction): Promise<void> => {
+    /* eslint-disable-next-line @typescript-eslint/prefer-optional-chain */
     if (interaction.guild === null || interaction.guild.rulesChannel === null) return;
 
     const sEmbed = new EmbedBuilder()
