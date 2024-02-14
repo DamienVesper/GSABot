@@ -260,7 +260,7 @@ class Server {
         });
 
         this.logger.on(`error`, err => {
-            log(`red`, err);
+            log(`red`, JSON.stringify(err));
         });
 
         log(`green`, `Initiated logging for ${this.name} [${this.config.uuid}].`);

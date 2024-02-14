@@ -26,6 +26,7 @@
         "prefer-arrow-callback": 2,
         "prefer-template": 2,
         "@typescript-eslint/curly": 0,
-        "@typescript-eslint/no-confusing-void-expression": 0
+        "@typescript-eslint/no-confusing-void-expression": 0,
+        "@typescript-eslint/no-non-null-assertion": 0
     }
 }

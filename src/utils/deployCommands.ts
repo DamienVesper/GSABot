@@ -24,7 +24,7 @@ const deployCommands = async (client: Client): Promise<void> => {
     await rest.put(Routes.applicationGuildCommands(process.env.DISCORD_ID, process.env.GUILD_ID), { body: commands })
         .then(() => {
             log(`green`, `Successfully registered application commands.`);
-        }).catch(err => log(`red`, err));
+        }).catch(err => log(`red`, JSON.stringify(err)));
 };
 
 export default deployCommands;

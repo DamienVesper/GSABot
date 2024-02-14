@@ -1,7 +1,5 @@
-import type { SlashCommandBuilder } from '@discordjs/builders';
-import type { Client as DCClient, ChatInputCommandInteraction } from 'discord.js';
-
-import type Server from '../modules/Server';
+import { type SlashCommandBuilder } from '@discordjs/builders';
+import type { Client as DCClient, type ChatInputCommandInteraction } from 'discord.js';
 
 interface Command {
     cmd: SlashCommandBuilder
@@ -15,6 +13,7 @@ interface Event {
 interface Client extends DCClient {
     commands?: Map<string, Command>
     events?: Map<string, Event>
+
     servers?: Map<string, Server>
 }
 

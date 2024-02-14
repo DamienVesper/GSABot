@@ -21,9 +21,9 @@ const loadCommands = async (client: Client): Promise<void> => {
     const files = readDirectory(path.resolve(__dirname, `../commands`));
 
     for (const file of files) {
-        const fileName = (file.split(process.platform === `win32` ? `\\` : `/`).pop() as string).split(`.`)[0];
-
+        const fileName = (file.split(process.platform === `win32` ? `\\` : `/`).pop()!).split(`.`)[0];
         const command = await import(file);
+
         if (command.cmd !== undefined) {
             log(`yellow`, `Loaded command ${fileName}.`);
             client.commands.set(fileName, {
@@ -48,13 +48,16 @@ const loadEvents = async (client: Client): Promise<void> => {
     const files = readDirectory(path.resolve(__dirname, `../events`));
 
     for (const file of files) {
-        const fileName = (file.split(process.platform === `win32` ? `\\` : `/`).pop() as string).split(`.`)[0];
+        const fileName = (file.split(process.platform === `win32` ? `\\` : `/`).pop()!).split(`.`)[0];
         log(`yellow`, `Loaded event ${fileName}.`);
 
         const event = await import(file);
 
-        client.on(fileName, event.default.bind(null, client));
-        client.events.set(fileName, { callback: event });
+        if (event.default?.bind !== undefined) {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+            client.on(fileName, event.default.bind(null, client));
+            client.events.set(fileName, { callback: event });
+        }
     }
 };
 

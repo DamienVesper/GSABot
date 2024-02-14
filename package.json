@@ -1,7 +1,7 @@
 {
-  "name": "@damienvesper/geneshiftbot",
-  "description": "I don't know why I made this.",
-  "version": "0.0.1",
+  "name": "@damienvesper/gsa-bot",
+  "description": "A bot that monitors Gene Shift Auto servers.",
+  "version": "0.0.2",
   "private": true,
   "main": "src/index.ts",
   "scripts": {
@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/DamienVesper/GeneshiftBot.git"
+    "url": "git+https://github.com/DamienVesper/GSABot.git"
   },
   "keywords": [
     "typescript",
@@ -27,32 +27,37 @@
   "author": "DamienVesper",
   "license": "AGPL-3.0",
   "bugs": {
-    "url": "https://github.com/DamienVesper/GeneshiftBot/issues"
+    "url": "https://github.com/DamienVesper/GSABot/issues"
   },
-  "homepage": "https://github.com/DamienVesper/GeneshiftBot#readme",
+  "homepage": "https://github.com/DamienVesper/GSABot#readme",
   "devDependencies": {
-    "@types/node": "^20.6.2",
-    "@types/tail": "^2.2.1",
-    "@typescript-eslint/eslint-plugin": "^6.7.0",
-    "@typescript-eslint/parser": "^6.7.0",
-    "dotenv": "^16.3.1",
-    "eslint": "^8.49.0",
-    "eslint-config-standard-with-typescript": "^39.0.0",
-    "eslint-plugin-import": "^2.28.1",
-    "eslint-plugin-n": "^16.1.0",
+    "@types/node": "^20.11.17",
+    "@types/tail": "^2.2.3",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "dotenv": "^16.4.3",
+    "eslint": "^8.56.0",
+    "eslint-config-standard-with-typescript": "^43.0.1",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-n": "^16.6.2",
     "eslint-plugin-promise": "^6.1.1",
-    "ts-node": "^10.9.1",
-    "typescript": "^5.2.2"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
   },
   "dependencies": {
-    "@discordjs/builders": "^1.6.5",
-    "@discordjs/rest": "^1.7.1",
-    "axios": "^1.5.0",
-    "discord-api-types": "^0.37.56",
-    "discord.js": "^14.13.0",
-    "mongoose": "^7.5.2",
-    "qs": "^6.11.2",
-    "string-table": "^0.1.5",
-    "tail": "^2.2.6"
+    "@discordjs/builders": "^1.7.0",
+    "@discordjs/opus": "^0.9.0",
+    "@discordjs/rest": "^2.2.0",
+    "@discordjs/voice": "^0.16.1",
+    "axios": "^1.6.7",
+    "canvas": "^2.11.2",
+    "discord-api-types": "^0.37.69",
+    "discord.js": "^14.14.1",
+    "ffmpeg-static": "^5.2.0",
+    "mongoose": "^8.1.2",
+    "tail": "^2.2.6",
+    "tweetnacl": "^1.0.3",
+    "youtube-sr": "^4.3.10",
+    "ytdl-core": "^4.11.5"
   }
 }

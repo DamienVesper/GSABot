@@ -1,13 +1,16 @@
 {
     "compilerOptions": {
-        "target": "ES2022",
-        "module": "commonjs",
-        "moduleResolution": "node",        
+        "target": "ESNext",
+        "module": "CommonJS",
+        "moduleResolution": "Node",
         "outDir": "./dist",
         "esModuleInterop": true,
         "resolveJsonModule": true,
         "strictNullChecks": true,
         "skipLibCheck": true
     },
-    "include": ["./src/**/*", "./config/**/*"]
+    "include": [
+        "./src/**/*",
+        "./config/**/*"
+    ]
 }
